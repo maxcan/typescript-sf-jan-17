@@ -8,7 +8,7 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloProvider from 'react-apollo/ApolloProvider';
-import AuthorList from './components/author-list/AuthorList';
+import AuthorList from './components/author-list/author-list';
 import endpoint from './gen/endpoint';
 
 const client = new ApolloClient({

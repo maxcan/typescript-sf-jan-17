@@ -1,23 +1,8 @@
 import * as React from 'react';
 import { ChildProps } from 'react-apollo';
-import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { GetAllAuthorsQuery } from '../../gen/gql-types';
-
-const ALL_AUTHORS = gql`
-    query GetAllAuthors {
-        allAuthors {
-            id
-            email
-            name
-            comments {
-                id
-                upvotes
-                text
-            }
-        }
-    }
-`;
+import ALL_AUTHORS from './author-query';
 
 interface ListProps {
     filter: string;
@@ -26,7 +11,7 @@ interface ListProps {
 class AuthorListRaw extends React.Component<ChildProps<ListProps, GetAllAuthorsQuery>, {}> {
     render () {
         if (!this.props.data || !this.props.data.allAuthors) {
-            return (<span>No Author Data</span>);
+            return (<span>Loading author data, probably...</span>);
         }
         const matchRegExp = new RegExp(this.props.filter, 'i');
         const authors = this.props.data.allAuthors.filter(author =>
@@ -40,7 +25,7 @@ class AuthorListRaw extends React.Component<ChildProps<ListProps, GetAllAuthorsQ
                         <em>&nbsp;({ele.email}):</em>
                         <ol>
                             { ele.comments && ele.comments.map(comment =>
-                                <li key={comment.id}>{comment.text}</li>
+                                <li key={comment.id}>[{comment.upvotes} votes] &nbsp;{comment.text}</li>
                             )}
                         </ol>
                     </li>
