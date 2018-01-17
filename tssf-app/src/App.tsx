@@ -1,6 +1,11 @@
 import * as React from 'react';
 import './App.css';
 
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
+
+
+
 const logo = require('./logo.svg');
 
 class App extends React.Component {
