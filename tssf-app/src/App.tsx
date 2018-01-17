@@ -18,7 +18,16 @@ const client = new ApolloClient({
 
 const logo = require('./logo.svg');
 
-class App extends React.Component {
+interface AppProps {}
+interface AppState {
+  filter: string;
+}
+
+class App extends React.Component<AppProps, AppState> {
+  constructor() {
+    super({});
+    this.state = {filter: ''};
+  }
   render() {
     return (
       <ApolloProvider client={client}>
@@ -27,7 +36,15 @@ class App extends React.Component {
             <img src={logo} className="App-logo" alt="logo" />
             <h1 className="App-title">Welcome to React</h1>
           </header>
-          <AuthorList />
+          <div className="main">
+              Author Filter:
+              <input
+                type="text"
+                onChange={ele => this.setState({filter: ele.target.value})}
+              />
+              <br/>
+            <AuthorList filter={this.state.filter}/>
+          </div>
         </div>
       </ApolloProvider>
     );

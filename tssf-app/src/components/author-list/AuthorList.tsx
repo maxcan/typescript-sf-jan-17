@@ -19,14 +19,22 @@ const ALL_AUTHORS = gql`
     }
 `;
 
-class AuthorListRaw extends React.Component<ChildProps<{}, GetAllAuthorsQuery>, {}> {
+interface ListProps {
+    filter: string;
+}
+
+class AuthorListRaw extends React.Component<ChildProps<ListProps, GetAllAuthorsQuery>, {}> {
     render () {
         if (!this.props.data || !this.props.data.allAuthors) {
             return (<span>No Author Data</span>);
         }
+        const matchRegExp = new RegExp(this.props.filter, 'i');
+        const authors = this.props.data.allAuthors.filter(author =>
+            author.name.match(matchRegExp) || author.email.match(matchRegExp)
+        );
         return (
             <ul>
-                { this.props.data.allAuthors.map(ele =>
+                { authors.map(ele =>
                     <li key={ele.email}>
                         <strong>{ele.name}</strong>
                         <em>&nbsp;({ele.email}):</em>
@@ -42,5 +50,5 @@ class AuthorListRaw extends React.Component<ChildProps<{}, GetAllAuthorsQuery>, 
     }
 }
 
-const AuthorList = graphql<GetAllAuthorsQuery, {}>(ALL_AUTHORS)(AuthorListRaw);
+const AuthorList = graphql<GetAllAuthorsQuery, ListProps>(ALL_AUTHORS)(AuthorListRaw);
 export default AuthorList;
