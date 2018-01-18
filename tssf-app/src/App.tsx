@@ -34,7 +34,7 @@ class App extends React.Component<AppProps, AppState> {
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Welcome to React</h1>
+            <h1 className="App-title">Welcome to Typescript SF</h1>
           </header>
           <div className="main">
               Author Filter:
