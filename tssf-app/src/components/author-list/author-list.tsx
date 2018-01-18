@@ -1,14 +1,30 @@
 import * as React from 'react';
 import { ChildProps } from 'react-apollo';
 import { graphql } from 'react-apollo';
-import { GetAllAuthorsQuery } from '../../gen/gql-types';
+import * as GQL from '../../gen/gql-types';
 import ALL_AUTHORS from './author-query';
+
+const CommentDetail: React.SFC<{key: string} & GQL.CommentFullFragment> = (props) => (
+    <li>[{props.upvotes} votes] &nbsp;{props.text}</li>
+);
+
+const AuthorDetail: React.SFC<{key: string} & GQL.AuthorFullFragment> = (props) => (
+    <li>
+        <strong>{props.name}</strong>
+        <em>&nbsp;({props.email}):</em>
+        <ol>
+            {props.comments && props.comments.map(comment =>
+                 <CommentDetail key={comment.id} {...comment} />
+            )}
+        </ol>
+    </li>
+);
 
 interface ListProps {
     filter: string;
 }
 
-class AuthorListRaw extends React.Component<ChildProps<ListProps, GetAllAuthorsQuery>, {}> {
+class AuthorListRaw extends React.Component<ChildProps<ListProps, GQL.GetAllAuthorsQuery>, {}> {
     render () {
         if (!this.props.data || !this.props.data.allAuthors) {
             return (<span>Loading author data, probably...</span>);
@@ -19,21 +35,11 @@ class AuthorListRaw extends React.Component<ChildProps<ListProps, GetAllAuthorsQ
         );
         return (
             <ul>
-                { authors.map(ele =>
-                    <li key={ele.email}>
-                        <strong>{ele.name}</strong>
-                        <em>&nbsp;({ele.email}):</em>
-                        <ol>
-                            { ele.comments && ele.comments.map(comment =>
-                                <li key={comment.id}>[{comment.upvotes} votes] &nbsp;{comment.text}</li>
-                            )}
-                        </ol>
-                    </li>
-                ) }
+                {authors.map(ele => <AuthorDetail key={ele.email} {...ele} />)}
             </ul>
         );
     }
 }
 
-const AuthorList = graphql<GetAllAuthorsQuery, ListProps>(ALL_AUTHORS)(AuthorListRaw);
+const AuthorList = graphql<GQL.GetAllAuthorsQuery,  ListProps>(ALL_AUTHORS)(AuthorListRaw);
 export default AuthorList;
